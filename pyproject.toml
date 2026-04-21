@@ -1,0 +1,38 @@
+[project]
+name = "siis"
+version = "0.1.0"
+description = "Structured Interview Integrity Score — an AI-era quality-of-hire framework that scores the interviewer, not the candidate."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Cecil Wolfe" }]
+keywords = ["people-analytics", "hiring", "structured-interviews", "llm", "hr-tech"]
+
+dependencies = [
+    "anthropic>=0.40.0",
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+app = ["streamlit>=1.30"]
+eval = ["pandas>=2.0", "scikit-learn>=1.3"]
+dev = ["pytest>=7.0", "ruff>=0.1"]
+
+[project.urls]
+Homepage = "https://github.com/cecilwolfe1/ai-predictive-quality-of-hire"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["siis*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
