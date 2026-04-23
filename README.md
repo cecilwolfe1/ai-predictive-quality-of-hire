@@ -31,7 +31,13 @@ for v in result.llm_verdicts:
     print(f"  [{v.verdict}] {v.dimension_key}: {v.rationale}")
 ```
 
-**Real example output:** See [`data/samples/example_mixed_scorecard.md`](data/samples/example_mixed_scorecard.md) for a full scored run against a realistic mixed-adherence scorecard. The scorer produces per-dimension observation, reasoning, verdict, and coaching-grade rationale — catching four distinct bias signals and a rating-to-evidence mismatch.
+**Real example output:** Three scored examples spanning the adherence spectrum are committed to [`data/samples/`](data/samples/):
+
+- [`example_strong_scorecard.md`](data/samples/example_strong_scorecard.md) — 8/8, high tier. Structured interviewing done properly.
+- [`example_mixed_scorecard.md`](data/samples/example_mixed_scorecard.md) — 2/8, low tier. One genuine behavioral story buried under bias signals and a rating mismatch.
+- [`example_weak_scorecard.md`](data/samples/example_weak_scorecard.md) — 0/8, low tier. The "vibes hire" failure mode.
+
+Each shows per-dimension observation, reasoning, verdict, and coaching-grade rationale.
 
 ## What this is not
 
