@@ -4,7 +4,7 @@
 
 Most organizations measure hiring quality by looking at the candidate — first-year performance, 12-month retention, hiring manager satisfaction. All lagging. All aimed at the wrong target. The strongest predictor of whether a hire will succeed isn't a candidate attribute. It's whether the interviewer actually ran a structured interview or just had a conversation and called it one.
 
-Meta-analytic research has been clear on this for 30 years. [Sackett, Zhang, Berry & Lievens (2022)](https://psycnet.apa.org/record/2022-17327-001) rank structured interviews (r = .42) as the single strongest selection method available — above cognitive ability tests, work samples, and every other method evaluated. The barrier was never knowledge. It was that adherence was nearly impossible to measure at scale.
+Meta-analytic research has been clear on this for 30 years. [Sackett, Zhang, Berry & Lievens (2022)](https://pubmed.ncbi.nlm.nih.gov/34929079/) rank structured interviews (r = .42) as the single strongest selection method available — above cognitive ability tests, work samples, and every other method evaluated. The barrier was never knowledge. It was that adherence was nearly impossible to measure at scale.
 
 That's what this project explores: using an LLM to score interviewer adherence to structured interviewing best practices, across ten dimensions, from transcripts and scorecards. The framework (SIIS) comes from [Zach Williams's writing](https://zjwilliams.substack.com/p/youre-measuring-the-wrong-person); this repo is my implementation of it as a working proof-of-concept.
 
@@ -30,6 +30,8 @@ print(f"{result.dimensions_passed}/10 — tier: {result.tier}")
 for v in result.llm_verdicts:
     print(f"  [{v.verdict}] {v.dimension_key}: {v.rationale}")
 ```
+
+**Real example output:** See [`data/samples/example_mixed_scorecard.md`](data/samples/example_mixed_scorecard.md) for a full scored run against a realistic mixed-adherence scorecard. The scorer produces per-dimension observation, reasoning, verdict, and coaching-grade rationale — catching four distinct bias signals and a rating-to-evidence mismatch.
 
 ## What this is not
 
@@ -76,24 +78,52 @@ Four design choices are worth naming explicitly, because they're what separates 
 
 ```
 siis/
-├── __init__.py          # Public API
-├── dimensions.py        # The ten dimensions with criteria and calibration examples
-├── schemas.py           # Pydantic schemas (DimensionVerdict, ScoringResult)
-└── scoring.py           # The scoring prompt + API call
+├── __init__.py              # Public API
+├── dimensions.py            # The ten dimensions with criteria and calibration examples
+├── schemas.py               # Scoring schemas (DimensionVerdict, ScoringResult)
+├── scoring.py               # The scoring prompt + API call
+├── generator_schemas.py     # Spec schema for synthetic data generation
+├── generator.py             # Synthetic transcript / scorecard generator
+└── sampler.py               # Archetype-based dataset sampler
 
-tests/                   # (coming: unit tests for schema validation and dry-run)
-data/samples/            # (coming: synthetic transcripts and scorecards)
-app.py                   # (coming: Streamlit demo)
-eval/                    # (coming: hand-labeled set + accuracy/kappa analysis)
+scripts/
+└── build_dataset.py         # CLI to generate a synthetic dataset
+
+tests/                       # (coming: unit tests for schema validation and dry-run)
+data/                        # (output directory for generated datasets)
+app.py                       # (coming: Streamlit demo)
+eval/                        # (coming: hand-labeled set + accuracy/kappa analysis)
 ```
+
+## Generating synthetic data
+
+```bash
+# Preview what would be generated without hitting the API
+python scripts/build_dataset.py --n 10 --dry-run
+
+# Generate 30 interviews across strong/mixed/weak archetypes
+python scripts/build_dataset.py --n 30 --out data/synthetic.jsonl
+```
+
+Each generated interview carries its ground-truth label set from the
+spec. This is what the eval harness uses to compute the scorer's
+per-dimension accuracy, precision/recall, and Cohen's kappa.
+
+The sampler builds from three interviewer archetypes (strong, mixed,
+weak) with dimension-specific pass probabilities for each. This is
+more realistic than uniform random sampling — real hiring data has
+correlated patterns (an interviewer who asks leading questions also
+tends to write impression-based scorecards), and archetype-based
+sampling preserves that structure.
+
 
 ---
 
 ## Running it
 
 ```bash
-git clone https://github.com/cecilwolfe1/ai-predictive-quality-of-hire.git
-cd ai-predictive-quality-of-hire
+git clone https://github.com/YOUR_USERNAME/siis-poc.git
+cd siis-poc
 
 python -m venv .venv && source .venv/bin/activate
 pip install -e .
