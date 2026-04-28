@@ -12,7 +12,9 @@ That's what this project explores: using an LLM to score interviewer adherence t
 
 ## What this is
 
-A Python package that takes an interview transcript or written scorecard and returns per-dimension pass/fail verdicts with coaching-grade rationale, plus a Streamlit app that demonstrates the end-to-end flow on synthetic data.
+A Python package that takes an interview transcript or written scorecard and returns per-dimension pass/fail verdicts with coaching-grade rationale, plus a Streamlit app that demonstrates the end-to-end flow on real scored samples.
+
+**Live demo:** _(deploy URL goes here once you've connected to Streamlit Cloud — see below)_
 
 ```python
 from siis import score_interview
@@ -125,25 +127,20 @@ sampling preserves that structure.
 
 ---
 
-## Running it
+## Running it locally
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/siis-poc.git
-cd siis-poc
+git clone https://github.com/cecilwolfe1/ai-predictive-quality-of-hire.git
+cd ai-predictive-quality-of-hire
 
 python -m venv .venv && source .venv/bin/activate
-pip install -e .
+pip install -e . streamlit
 
-cp .env.example .env
-# edit .env and add your ANTHROPIC_API_KEY
-
-python -c "from siis import score_interview_dry_run; \
-  print(score_interview_dry_run(interview_id='x', interviewer_id='y', \
-    role='Senior Software Engineer', \
-    scorecard='She seemed sharp, great culture fit. Hire.')['user_message'])"
+# Run the demo app
+streamlit run app.py
 ```
 
-Dry-run doesn't hit the API and doesn't need a key. Good for poking at the prompt.
+The demo runs without an API key in preview-only mode — you can browse all three scored examples and see what the scoring prompt would send to Claude. To enable live scoring of pasted scorecards, copy `.env.example` to `.env`, add your `ANTHROPIC_API_KEY`, and re-run.
 
 ---
 

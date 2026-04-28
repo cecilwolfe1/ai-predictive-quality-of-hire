@@ -14,7 +14,9 @@ generates fields in order, which means the verdict is conditioned on the
 observation and reasoning rather than the other way around.
 """
 
-from typing import Literal
+from __future__ import annotations
+
+from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 
@@ -59,11 +61,11 @@ class ScoringResult(BaseModel):
     interview_id: str
     interviewer_id: str
     llm_verdicts: list[DimensionVerdict]
-    competency_coverage: Verdict | None = Field(
+    competency_coverage: Optional[Verdict] = Field(
         default=None,
         description="Passed in from interview guide metadata, not scored by LLM.",
     )
-    evaluation_independence: Verdict | None = Field(
+    evaluation_independence: Optional[Verdict] = Field(
         default=None,
         description="Passed in from ATS timestamp data, not scored by LLM.",
     )
