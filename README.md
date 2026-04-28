@@ -14,7 +14,7 @@ That's what this project explores: using an LLM to score interviewer adherence t
 
 A Python package that takes an interview transcript or written scorecard and returns per-dimension pass/fail verdicts with coaching-grade rationale, plus a Streamlit app that demonstrates the end-to-end flow on real scored samples.
 
-**Live demo:** _(deploy URL goes here once you've connected to Streamlit Cloud — see below)_
+**Live demo:** https://ai-predictive-quality-of-hire-8aerdaqrhcp5xgxpew2hs6.streamlit.app/
 
 ```python
 from siis import score_interview
